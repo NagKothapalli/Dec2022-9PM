@@ -1,5 +1,6 @@
 package selenium;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -22,16 +23,31 @@ public class GmailAutomation {
 	// current browser window got closed
 	//4.junit.framework.ComparisonFailure: expected:<[A]mail> but was:<[G]mail>
 	//5.Which type of class can not be inherited : final class can not be inherited , we can't extend  or we can not create object for the class
+	//6.java.lang.NullPointerException : if we try to access an object whose value is empty
+	//7.org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {"method":"css selector","selector":"*[name='identifier']"}
 	String expectedValue = "Gmail";
-	@Test
-	public void launchApplication() {
-		System.out.println("Test Case : Launch Gmail Application");
+	              //*****************Functions in different classes in selenium webdriver************************//
+	//WebDriver : getTitle , getCurrentURL , get , getWindowHAndle , findElement ,
+	//By : id , name , class , cssSelector , linkText , partialLinkText , tagName , xpath
+	//WebElement : click , sendkeys , getText , getAttribute , clear ,
+	//***********************************************************************************************************//
+	String name = "Ram";
+	WebDriver driver;
+	public GmailAutomation()
+	{
 		System.setProperty("webdriver.chrome.driver",
 				"D:\\Softwares\\JarFiles\\chromedriver-win32-90\\chromedriver.exe");
+		driver = new ChromeDriver();
+	}
+	@Before
+	public void launchApplication() {
+		System.out.println(name.toUpperCase());
+		System.out.println("Test Case : Launch Gmail Application");
+		
 		//ChromeDriver driver = new ChromeDriver();// this constructor will execute driver.exe file as a result an empty
 													// chrome browser will be opened
-		
-		WebDriver driver = new ChromeDriver();
+		//int rollNum = 22; // Local Variable
+		//WebDriver driver = new ChromeDriver(); //Local variable
 		String sessionID = driver.getWindowHandle();
 		System.out.println("Current Session ID :" + sessionID);
 		driver.get("https://gmail.com"); // Every browser window will have a unique session id , this will be assigned
@@ -40,10 +56,27 @@ public class GmailAutomation {
 		System.out.println("Title of the Application :" + actualTtitle);
 		System.out.println("Current URL :" + driver.getCurrentUrl());
 		Assert.assertEquals(expectedValue, actualTtitle);	
-		WebElement element = driver.findElement(By.name("identifier"));
-		element.click();
-		element.sendKeys("nag022");
-		
+		//By myby = new By();		
+		driver.findElement(By.name("identifier")).click();	
+		//System.out.println(rollNum);
+	}
+	@Test
+	public void loginToApplication()
+	{
+		System.out.println(name);
+		By myby = By.name("identifier");
+		WebElement element = driver.findElement(myby);
+		String mylabel = element.getAttribute("aria-label");
+		System.out.println("My Aria Label :" + mylabel);
+		if(mylabel.equals("Email or phone"))
+		{
+			element.click();
+			element.sendKeys("sddskjfdsfjdklgdf;");
+			element.clear();
+			element.sendKeys("nag022");
+			String txt = element.getText();
+			System.out.println("Text on the email field :" + txt);
+		}
 	}
 
 }
