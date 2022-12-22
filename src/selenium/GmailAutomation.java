@@ -81,7 +81,9 @@ public class GmailAutomation {
 	
 	//tagname[@attribute = 'value']  Ex : //button[@jsname='Cuz2Ue']
 	
-	//tagname[text() = 'value']   Ex : //span[text()='Create account']
+	//tagname[text() = 'value']   Ex : //span[text()='Create account']    
+	
+	//tagname[contains(text() , 'value')]    Ex : //span[contains(text(),'Create')]
 	
 	//tagname[@attribute1 = 'value' and @attribute2 = 'value']  - Ex : //span[@class='VfPpkd-vQzf8d'  and @id='vQzf8d' ]
 	
@@ -93,7 +95,8 @@ public class GmailAutomation {
 	 //	/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[2]/div/div/div[1]/div/button/span
 		//driver.findElement(By.xpath("/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[2]/div/div/div[1]/div/button/span")).click();
 	//driver.findElement(By.xpath("//span[text()='Create account']")).click();
-		driver.findElement(By.xpath("//span[@class='VfPpkd-vQzf8d'  and text()='Create account']")).click();
+		//driver.findElement(By.xpath("//span[@class='VfPpkd-vQzf8d'  and text()='Create account']")).click();
+		driver.findElement(By.xpath("//span[contains(text(),'Create')]")).click();
 	}
 	
 	
