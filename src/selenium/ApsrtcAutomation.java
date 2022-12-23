@@ -23,6 +23,7 @@ public class ApsrtcAutomation
 	public void launchRedBus()
 	{
 		driver.get("https://www.apsrtconline.in/");
+		driver.manage().window().maximize();
 	}
 	
 	@Test
@@ -40,7 +41,7 @@ public class ApsrtcAutomation
 		driver.findElement(By.xpath("//input[@name='searchBtn']")).click();
 	}
 	@Test
-	public void bookBusTicket_WithActions()
+	public void bookBusTicket_WithActions() throws InterruptedException
 	{
 		System.out.println("Test Case : Book Bus Ticket");
 		WebElement source = driver.findElement(By.xpath("//input[@name='source']"));
@@ -50,7 +51,14 @@ public class ApsrtcAutomation
 		WebElement destination = driver.findElement(By.xpath("//input[@name='destination']"));
 		actions.moveToElement(destination).click().sendKeys("GUNTUR").pause(1000).sendKeys(Keys.ENTER).build().perform();
 		//actions.pause(1000).sendKeys(Keys.ENTER).build().perform();
+		driver.findElement(By.xpath("//input[@id='txtJourneyDate']")).click();
+		WebElement jDate = driver.findElement(By.xpath("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='28']"));
+		jDate.click();
 		driver.findElement(By.xpath("//input[@name='searchBtn']")).click();
+		Thread.sleep(4000);
+		driver.findElement(By.xpath("//div[@id='returnDiscountModal']//input[@name='searchBtn']")).click();
+		//jDate.click();
+		driver.findElement(By.xpath("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='28']")).click();
 	}
 
 }
