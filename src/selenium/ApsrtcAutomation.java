@@ -1,6 +1,10 @@
 package selenium;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Set;
 
 import org.junit.Before;
@@ -25,10 +29,32 @@ public class ApsrtcAutomation
 		driver = new ChromeDriver();
 	}
 	@Before
-	public void launchRedBus()
+	public void launchRedBus() throws IOException
 	{
-		driver.get("https://www.apsrtconline.in/");
+		//driver.get("https://www.apsrtconline.in/");//Hard coded data
+		String url = readData("URL");
+		driver.get(url);
 		driver.manage().window().maximize();
+	}
+	@Test
+	public void readPropertiesData() throws IOException
+	{
+		FileInputStream myfile = new FileInputStream("Data/ApsrtcData.properties");
+		Properties prop = new Properties();
+		prop.load(myfile);
+		String myurl = prop.getProperty("URL");
+		System.out.println("Given URL :" + myurl);
+		System.out.println("Given Source :" + prop.getProperty("FromCity"));
+		System.out.println("Given Destination :" + prop.getProperty("ToCity"));
+	}
+	
+	public String readData(String key) throws IOException
+	{
+		FileInputStream myfile = new FileInputStream("Data/ApsrtcData.properties");
+		Properties prop = new Properties();
+		prop.load(myfile);
+		String value = prop.getProperty(key);
+		return value;
 	}
 	
 	@Test
@@ -46,15 +72,15 @@ public class ApsrtcAutomation
 		driver.findElement(By.xpath("//input[@name='searchBtn']")).click();
 	}
 	@Test
-	public void bookBusTicket_WithActions() throws InterruptedException
+	public void bookBusTicket_WithActions() throws InterruptedException, IOException
 	{
 		System.out.println("Test Case : Book Bus Ticket");
 		WebElement source = driver.findElement(By.xpath("//input[@name='source']"));
 		Actions actions = new Actions(driver);
-		actions.moveToElement(source).click().sendKeys("HYDERABAD").pause(1000).sendKeys(Keys.ENTER).build().perform();
+		actions.moveToElement(source).click().sendKeys(readData("FromCity")).pause(1000).sendKeys(Keys.ENTER).build().perform();
 		//actions.pause(1000).sendKeys(Keys.ENTER).build().perform();		
 		WebElement destination = driver.findElement(By.xpath("//input[@name='destination']"));
-		actions.moveToElement(destination).click().sendKeys("GUNTUR").pause(1000).sendKeys(Keys.ENTER).build().perform();
+		actions.moveToElement(destination).click().sendKeys(readData("ToCity")).pause(1000).sendKeys(Keys.ENTER).build().perform();
 		//actions.pause(1000).sendKeys(Keys.ENTER).build().perform();
 		driver.findElement(By.xpath("//input[@id='txtJourneyDate']")).click();
 		WebElement jDate = driver.findElement(By.xpath("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='30']"));
@@ -63,7 +89,8 @@ public class ApsrtcAutomation
 		Thread.sleep(4000);
 		driver.findElement(By.xpath("//div[@id='returnDiscountModal']//input[@name='searchBtn']")).click();
 		//jDate.click();
-		driver.findElement(By.xpath("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='30']")).click();
+		String jdate  = readData("JDate");
+		driver.findElement(By.xpath("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='"+jdate+"']")).click();
 	}
 	@Test
 	public void mouseOperations()
