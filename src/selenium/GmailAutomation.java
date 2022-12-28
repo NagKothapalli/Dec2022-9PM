@@ -1,5 +1,6 @@
 package selenium;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.Before;
@@ -11,7 +12,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import junit.framework.Assert;
 
-public class GmailAutomation {
+public class GmailAutomation //extends ReadProperties
+{
 	// 1.java.lang.IllegalStateException: The path to the driver executable must be
 	// set by the webdriver.chrome.driver system property; for more information, see
 	// https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver. The latest version
@@ -38,10 +40,11 @@ public class GmailAutomation {
 	//***********************************************************************************************************//
 	String name = "Ram";
 	WebDriver driver;
-	public GmailAutomation()
+	ReadProperties myprop;//null
+	public GmailAutomation() throws IOException
 	{
-		System.setProperty("webdriver.chrome.driver",
-				"D:\\Softwares\\JarFiles\\chromedriver-win32-90\\chromedriver.exe");
+		myprop = new ReadProperties("Data/ApsrtcData.properties");
+		System.setProperty("webdriver.chrome.driver",myprop.readData("DriverPath"));
 		driver = new ChromeDriver();
 	}
 	//@Before
@@ -51,7 +54,7 @@ public class GmailAutomation {
 	}
 	
 	@Before	
-	public void launchApplication() {
+	public void launchApplication() throws IOException {
 		System.out.println(name.toUpperCase());
 		System.out.println("Test Case : Launch Gmail Application");
 		
@@ -61,8 +64,9 @@ public class GmailAutomation {
 		//WebDriver driver = new ChromeDriver(); //Local variable
 		String sessionID = driver.getWindowHandle();
 		System.out.println("Current Session ID :" + sessionID);
-		driver.get("https://gmail.com"); // Every browser window will have a unique session id , this will be assigned
+		//driver.get("https://gmail.com"); // Every browser window will have a unique session id , this will be assigned
 											// to the driver variable
+		driver.get(myprop.readData("URL"));
 		String actualTtitle = driver.getTitle();
 		System.out.println("Title of the Application :" + actualTtitle);
 		System.out.println("Current URL :" + driver.getCurrentUrl());

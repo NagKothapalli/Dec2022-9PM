@@ -1,5 +1,7 @@
 package selenium;
 
+import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -7,19 +9,21 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-public class RedBusAutomation
+public class RedBusAutomation //extends ReadProperties
 {
 	WebDriver driver;
-	public RedBusAutomation()
+	ReadProperties myprop;//null
+	public RedBusAutomation() throws IOException
 	{
-		System.setProperty("webdriver.chrome.driver",
-				"D:\\Softwares\\JarFiles\\chromedriver-win32-90\\chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver",myprop.readData("DriverPath"));
 		driver = new ChromeDriver();
 	}
 	@Before
-	public void launchRedBus()
+	public void launchRedBus() throws IOException
 	{
-		driver.get("https://www.redbus.in/");
+		myprop = new ReadProperties("Data/ApsrtcData.properties");
+		//driver.get("https://www.redbus.in/");
+		driver.get(myprop.readData("URL"));
 		driver.manage().window().maximize();
 	}
 	@Test

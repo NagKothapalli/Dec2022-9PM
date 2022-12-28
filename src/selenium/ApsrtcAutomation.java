@@ -16,23 +16,25 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 
-public class ApsrtcAutomation
+public class ApsrtcAutomation //extends ReadProperties
 {
 	//org.openqa.selenium.UnhandledAlertException: unexpected alert open: {Alert text : Please select end place.}
 	//org.openqa.selenium.StaleElementReferenceException: stale element reference: element is not attached to the page document
 	//org.openqa.selenium.NoSuchSessionException: Session ID is null. Using WebDriver after calling quit()?
-	WebDriver driver;
-	public ApsrtcAutomation()
-	{
-		System.setProperty("webdriver.chrome.driver",
-				"D:\\Softwares\\JarFiles\\chromedriver-win32-90\\chromedriver.exe");
+	WebDriver driver;//null
+	ReadProperties myprop;//null
+	public ApsrtcAutomation() throws IOException
+	{	
+		myprop = new ReadProperties("Data/ApsrtcData.properties");
+		System.setProperty("webdriver.chrome.driver",myprop.readData("DriverPath"));
 		driver = new ChromeDriver();
+		
 	}
 	@Before
 	public void launchRedBus() throws IOException
 	{
 		//driver.get("https://www.apsrtconline.in/");//Hard coded data
-		String url = readData("URL");
+		String url = myprop.readData("URL");
 		driver.get(url);
 		driver.manage().window().maximize();
 	}
@@ -48,14 +50,7 @@ public class ApsrtcAutomation
 		System.out.println("Given Destination :" + prop.getProperty("ToCity"));
 	}
 	
-	public String readData(String key) throws IOException
-	{
-		FileInputStream myfile = new FileInputStream("Data/ApsrtcData.properties");
-		Properties prop = new Properties();
-		prop.load(myfile);
-		String value = prop.getProperty(key);
-		return value;
-	}
+	
 	
 	@Test
 	public void bookBusTicket()
@@ -77,10 +72,10 @@ public class ApsrtcAutomation
 		System.out.println("Test Case : Book Bus Ticket");
 		WebElement source = driver.findElement(By.xpath("//input[@name='source']"));
 		Actions actions = new Actions(driver);
-		actions.moveToElement(source).click().sendKeys(readData("FromCity")).pause(1000).sendKeys(Keys.ENTER).build().perform();
+		actions.moveToElement(source).click().sendKeys(myprop.readData("FromCity")).pause(1000).sendKeys(Keys.ENTER).build().perform();
 		//actions.pause(1000).sendKeys(Keys.ENTER).build().perform();		
 		WebElement destination = driver.findElement(By.xpath("//input[@name='destination']"));
-		actions.moveToElement(destination).click().sendKeys(readData("ToCity")).pause(1000).sendKeys(Keys.ENTER).build().perform();
+		actions.moveToElement(destination).click().sendKeys(myprop.readData("ToCity")).pause(1000).sendKeys(Keys.ENTER).build().perform();
 		//actions.pause(1000).sendKeys(Keys.ENTER).build().perform();
 		driver.findElement(By.xpath("//input[@id='txtJourneyDate']")).click();
 		WebElement jDate = driver.findElement(By.xpath("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='30']"));
@@ -89,7 +84,7 @@ public class ApsrtcAutomation
 		Thread.sleep(4000);
 		driver.findElement(By.xpath("//div[@id='returnDiscountModal']//input[@name='searchBtn']")).click();
 		//jDate.click();
-		String jdate  = readData("JDate");
+		String jdate  = myprop.readData("JDate");
 		driver.findElement(By.xpath("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='"+jdate+"']")).click();
 	}
 	@Test
