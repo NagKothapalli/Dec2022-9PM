@@ -23,15 +23,16 @@ public class ApsrtcAutomation //extends ReadProperties
 	//org.openqa.selenium.NoSuchSessionException: Session ID is null. Using WebDriver after calling quit()?
 	WebDriver driver;//null
 	ReadProperties myprop;//null
+	DriverUtilities utils;
 	public ApsrtcAutomation() throws IOException
 	{	
 		myprop = new ReadProperties("Data/ApsrtcData.properties");
 		System.setProperty("webdriver.chrome.driver",myprop.readData("DriverPath"));
 		driver = new ChromeDriver();
-		
+		utils = new DriverUtilities(driver);
 	}
 	@Before
-	public void launchRedBus() throws IOException
+	public void launchApplication() throws IOException
 	{
 		//driver.get("https://www.apsrtconline.in/");//Hard coded data
 		String url = myprop.readData("URL");
@@ -87,6 +88,52 @@ public class ApsrtcAutomation //extends ReadProperties
 		String jdate  = myprop.readData("JDate");
 		driver.findElement(By.xpath("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='"+jdate+"']")).click();
 	}
+	
+	
+	//*************************xpaths***************
+	String fromCityXpath = "//input[@name='source']";
+	String toCityXpath = "//input[@name='destination']";
+	String openCalanderXpath = "//input[@id='txtJourneyDate']";
+	String searchButtonXpath = "//input[@name='searchBtn']";
+	String retrunDiscountModalXpath = "//div[@id='returnDiscountModal']//input[@name='searchBtn']";
+	
+	//***********************************************
+	@Test
+	public void bookBusTicket_New() throws InterruptedException, IOException
+	{
+		System.out.println("Test Case : Book Bus Ticket");
+		utils.enterText(fromCityXpath,myprop.readData("FromCity"));
+		utils.clickEnter();
+		utils.enterText(toCityXpath,myprop.readData("ToCity"));
+		utils.clickEnter();
+		utils.elementClick(openCalanderXpath);
+		String jdate  = myprop.readData("JDate");
+		utils.elementClick("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='"+jdate+"']");
+		utils.elementClick(searchButtonXpath);
+		utils.fixedWait(2);
+		utils.elementClick(retrunDiscountModalXpath);
+		utils.elementClick("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='"+jdate+"']");
+	}
+	@Test
+	public void bookBusTicket_NewXpath() throws InterruptedException, IOException
+	{
+		System.out.println("Test Case : Book Bus Ticket");
+		utils.enterText("//input[@name='source']",myprop.readData("FromCity"));
+		utils.clickEnter();
+		utils.enterText("//input[@name='destination']",myprop.readData("ToCity"));
+		utils.clickEnter();
+		utils.elementClick("//input[@id='txtJourneyDate']");
+		String jdate  = myprop.readData("JDate");
+		utils.elementClick("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='"+jdate+"']");
+		utils.elementClick("//input[@name='searchBtn']");
+		utils.fixedWait(2);
+		utils.elementClick("//div[@id='returnDiscountModal']//input[@name='searchBtn']");
+		utils.elementClick("//div[@class='ui-datepicker-group ui-datepicker-group-first']//table//tbody//tr//a[text()='"+jdate+"']");
+	}
+	
+	
+	
+	
 	@Test
 	public void mouseOperations()
 	{
@@ -101,7 +148,9 @@ public class ApsrtcAutomation //extends ReadProperties
 	@Test
 	public void workWithMultipleWindows() throws InterruptedException
 	{
-		driver.findElement(By.xpath("//a[@title='TimeTable / Track']")).click();
+		//driver.findElement(By.xpath("//a[@title='TimeTable / Track']")).click();
+		WebElement timetable = driver.findElement(By.xpath("//a[@title='TimeTable / Track']"));
+		utils.elementClick(timetable);
 		Set<String> myset = driver.getWindowHandles();
 		System.out.println("Windows Count Before:" + myset.size());
 		driver.findElement(By.xpath("//a[text()='All services Time Table & Tracking']")).click();
